@@ -2,6 +2,7 @@ package ru.skypro.homework.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -12,6 +13,7 @@ import ru.skypro.homework.dto.AdRequestDTO;
 import ru.skypro.homework.service.AdService;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/ads")
@@ -34,10 +36,10 @@ public class AdController {
     @PostMapping
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public ResponseEntity<AdDTO> addAd(
-            @Valid @RequestPart AdRequestDTO request,
+            @Valid @RequestPart("properties") AdRequestDTO properties,
             @RequestPart MultipartFile image) {
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(adService.createAd(request, image));
+                .body(adService.createAd(properties, image));
     }
 
     @GetMapping("/{id}")
@@ -62,10 +64,13 @@ public class AdController {
 
     @PatchMapping("/{id}/image")
     @PreAuthorize("hasRole('ADMIN') or @adService.isAdOwner(#id)")
-    public ResponseEntity<?> updateAdImage(
+    public ResponseEntity<byte[]> updateAdImage(
             @PathVariable Long id,
-            @RequestPart MultipartFile image) {
-        adService.updateAdImage(id, image);
-        return ResponseEntity.ok().build();
+            @RequestPart MultipartFile image) throws IOException {
+        byte[] imageBytes = adService.updateAdImage(id, image);
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(imageBytes);
     }
+
 }

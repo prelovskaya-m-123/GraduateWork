@@ -12,9 +12,9 @@ public class ValidationConstraints {
     public static final int COMMENT_TEXT_MAX_LENGTH = 64;
 
     // Для пользователей
-    public static final int FIRST_NAME_MIN_LENGTH = 3;
+    public static final int FIRST_NAME_MIN_LENGTH = 2;
     public static final int FIRST_NAME_MAX_LENGTH = 10;
-    public static final int LAST_NAME_MIN_LENGTH = 3;
+    public static final int LAST_NAME_MIN_LENGTH = 2;
     public static final int LAST_NAME_MAX_LENGTH = 10;
 
     // Для логина
