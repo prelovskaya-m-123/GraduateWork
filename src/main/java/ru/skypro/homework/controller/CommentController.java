@@ -36,7 +36,7 @@ public class CommentController {
                 .body(commentService.addComment(adId, request));
     }
 
-    @DeleteMapping("/{adId}/comments/{commentId}")
+    @DeleteMapping("/{commentId}")
     @PreAuthorize("hasRole('ADMIN') or " +
             "(@commentService.isCommentOwner(#commentId) and " +
             "@adService.isAdAccessibleForUser(#adId))")
@@ -54,7 +54,7 @@ public class CommentController {
         }
     }
 
-    @PatchMapping("/{adId}/comments/{commentId}")
+    @PatchMapping("/{commentId}")
     @PreAuthorize("hasRole('ADMIN') or " +
             "(@commentService.isCommentOwner(#commentId) and " +
             "@adService.isAdAccessibleForUser(#adId))")

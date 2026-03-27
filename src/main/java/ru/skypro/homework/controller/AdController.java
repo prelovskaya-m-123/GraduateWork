@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ru.skypro.homework.dto.AdDTO;
 import ru.skypro.homework.dto.AdsDTO;
 import ru.skypro.homework.dto.AdRequestDTO;
+import ru.skypro.homework.dto.ExtendedAdDTO;
 import ru.skypro.homework.service.AdService;
 
 import javax.validation.Valid;
@@ -43,8 +44,8 @@ public class AdController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<AdDTO> getAd(@PathVariable Long id) {
-        return ResponseEntity.ok(adService.getAd(id));
+    public ResponseEntity<ExtendedAdDTO> getAd(@PathVariable Long id) {
+        return ResponseEntity.ok(adService.getExtendedAd(id));
     }
 
     @DeleteMapping("/{id}")
