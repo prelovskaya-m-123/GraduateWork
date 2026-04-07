@@ -1,0 +1,152 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-users-table
+      author: prelovskaya-m-123
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: email
+                  type: VARCHAR(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: VARCHAR(255)
+              - column:
+                  name: last_name
+                  type: VARCHAR(255)
+              - column:
+                  name: phone
+                  type: VARCHAR(50)
+              - column:
+                name: role
+                type: VARCHAR(50)
+                constraints:
+                  nullable: false
+              - column:
+                name: password
+                type: VARCHAR(255)
+                constraints:
+                  nullable: false
+              - column:
+                name: image_url
+                type: VARCHAR(500)
+
+  - changeSet:
+      id: create-ads-table
+      author: prelovskaya-m-123
+      changes:
+        - createTable:
+            tableName: ads
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: author_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_ad_author
+                    references: users(id)
+              - column:
+                  name: title
+                  type: VARCHAR(32)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: price
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: description
+                  type: VARCHAR(64)
+              - column:
+                  name: image_url
+                  type: VARCHAR(500)
+
+  - changeSet:
+      id: create-comments-table
+      author: prelovskaya-m-123
+      changes:
+        - createTable:
+            tableName: comments
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: ad_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_comment_ad
+                    references: ads(id)
+              - column:
+                  name: author_id
+                  type: BIGINT
+                  constraints:
+                    nullable: false
+                    foreignKeyName: fk_comment_author
+                    references: users(id)
+              - column:
+                  name: text
+                  type: VARCHAR(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: created_at
+                  type: TIMESTAMP
+                  constraints:
+                    nullable: false
+              - column:
+                  name: author_image
+                  type: VARCHAR(500)
+              - column:
+                  name: author_first_name
+                  type: VARCHAR(255)
+
+  - changeSet:
+      id: create-indexes-for-foreign-keys
+      author: prelovskaya-m-123
+      changes:
+        - createIndex:
+            tableName: ads
+            indexName: idx_ads_author
+            columns:
+              - column:
+                  name: author_id
+                  type: BIGINT
+        - createIndex:
+            tableName: comments
+            indexName: idx_comments_ad
+            columns:
+              - column:
+                  name: ad_id
+                  type: BIGINT
+        - createIndex:
+            tableName: comments
+            indexName: idx_comments_author
+            columns:
+              - column:
+                  name: author_id
+                  type: BIGINT
