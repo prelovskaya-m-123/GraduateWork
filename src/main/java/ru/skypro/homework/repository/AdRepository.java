@@ -1,8 +1,8 @@
 package ru.skypro.homework.repository;
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ru.skypro.homework.model.Ad;
 
@@ -12,23 +12,18 @@ import java.util.Optional;
 @Repository
 public interface AdRepository extends JpaRepository<Ad, Long> {
 
-    /**
-     * Получение объявлений пользователя
-     */
-    List<Ad> findByAuthorPk(Long authorId);
+    List<Ad> findAll();
 
-    /**
-     * Поиск объявления по ID
-     */
     Optional<Ad> findById(Long id);
 
-    /**
-     * Получение всех объявлений с пагинацией
-     */
-    Page<Ad> findAll(Pageable pageable);
+    List<Ad> findByAuthorPk(Long authorId);
 
-    /**
-     * Проверка принадлежности объявления пользователю
-     */
     boolean existsByIdAndAuthorPk(Long adId, Long authorId);
+
+    @Query("SELECT a FROM Ad a LEFT JOIN FETCH a.author WHERE a.pk = :adId")
+    Optional<Ad> findAdWithAuthor(@Param("adId") Long adId);
+
+    @Query("SELECT a FROM Ad a LEFT JOIN FETCH a.author ORDER BY a.createdAt DESC")
+    List<Ad> findAllWithAuthors();
+
 }
