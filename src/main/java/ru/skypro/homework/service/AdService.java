@@ -5,6 +5,7 @@ import ru.skypro.homework.dto.AdDTO;
 import ru.skypro.homework.dto.AdRequestDTO;
 import ru.skypro.homework.dto.AdsDTO;
 import ru.skypro.homework.dto.ExtendedAdDTO;
+import ru.skypro.homework.model.User;
 
 import java.io.IOException;
 
@@ -22,7 +23,7 @@ public interface AdService {
 
     void deleteAd(Long id);
 
-    void updateAdImage(Long id, MultipartFile image) throws IOException;
+    byte[] updateAdImage(Long id, MultipartFile image) throws IOException;
 
     boolean isAdOwner(Long adId);
 

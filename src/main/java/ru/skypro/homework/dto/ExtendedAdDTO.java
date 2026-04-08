@@ -1,8 +1,10 @@
 package ru.skypro.homework.dto;
 
 import lombok.Data;
+import lombok.Builder;
 
 @Data
+@Builder
 public class ExtendedAdDTO {
     private Long pk;
     private String authorFirstName;

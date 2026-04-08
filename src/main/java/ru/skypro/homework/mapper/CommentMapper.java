@@ -6,6 +6,8 @@ import ru.skypro.homework.dto.CommentDTO;
 import ru.skypro.homework.dto.CommentRequestDTO;
 import ru.skypro.homework.model.Comment;
 
+import java.util.Date;
+
 @Component
 @RequiredArgsConstructor
 public class CommentMapper {
@@ -20,7 +22,7 @@ public class CommentMapper {
                 .author(comment.getAuthor() != null ? comment.getAuthor().getPk() : null)
                 .authorImage(comment.getAuthorImage())
                 .authorFirstName(comment.getAuthorFirstName())
-                .createdAt(comment.getCreatedAt())
+                .createdAt(new Date(comment.getCreatedAt()))
                 .text(comment.getText())
                 .build();
     }

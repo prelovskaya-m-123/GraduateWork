@@ -2,7 +2,9 @@ package ru.skypro.homework.dto;
 
 import lombok.Data;
 import java.util.Date;
+import lombok.Builder;
 
+@Builder
 @Data
 public class CommentDTO {
     private Long pk;

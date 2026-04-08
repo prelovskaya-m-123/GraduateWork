@@ -1,6 +1,7 @@
 package ru.skypro.homework.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.AdRepository;
 import ru.skypro.homework.repository.UserRepository;
 import ru.skypro.homework.service.AdService;
+import ru.skypro.homework.service.ImageService;
+import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,8 +36,8 @@ public class AdServiceImpl implements AdService {
     private final UserRepository userRepository;
     private final AdMapper adMapper;
     private final ComplexMapper complexMapper;
-
-    private static final String IMAGE_UPLOAD_DIR = "uploads/images/";
+    private final UserService userService;
+    private final ImageService imageService;
 
     @Override
     public AdsDTO getAllAds() {
@@ -58,8 +61,10 @@ public class AdServiceImpl implements AdService {
         Ad ad = adMapper.toEntity(properties);
         ad.setAuthor(currentUser);
 
-        String imageUrl = saveImage(image);
-        ad.setImage(imageUrl);
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = imageService.saveImage(image, "ads");
+            ad.setImage(imageUrl);
+        }
 
         Ad savedAd = adRepository.save(ad);
         return adMapper.toDto(savedAd);
@@ -95,13 +100,18 @@ public class AdServiceImpl implements AdService {
 
     @Override
     @PreAuthorize("@adService.isAdOwner(#id)")
-    public void updateAdImage(Long id, MultipartFile image) throws IOException {
+    public byte[] updateAdImage(Long id, MultipartFile image) throws IOException {
         Ad ad = adRepository.findById(id)
                 .orElseThrow(() -> new AdNotFoundException("Объявление не найдено"));
+        if (!isAdAccessibleForUser(id)) {
+            throw new AccessDeniedException("Недостаточно прав для обновления изображения объявления");
+        }
+        String imageUrl = imageService.saveImage(image, "ads");
 
-        String imageUrl = saveImage(image);
         ad.setImage(imageUrl);
         adRepository.save(ad);
+
+        return image.getBytes();
     }
 
     @Override
@@ -128,27 +138,7 @@ public class AdServiceImpl implements AdService {
                 .orElse(false);
     }
 
-    /**
-     * Вспомогательный метод для сохранения изображения
-     * @param image загружаемое изображение
-     * @return URL или путь к сохранённому изображению
-     */
-    private String saveImage(MultipartFile image) throws IOException {
-        Path uploadDir = Paths.get(IMAGE_UPLOAD_DIR);
-        Files.createDirectories(uploadDir);
 
-        String fileName = System.currentTimeMillis() + "_" + image.getOriginalFilename();
-        Path filePath = uploadDir.resolve(fileName);
-
-        image.transferTo(filePath.toFile());
-
-        return IMAGE_UPLOAD_DIR + fileName;
-    }
-
-    /**
-     * Получаем текущего пользователя из контекста безопасности
-     * @return сущность пользователя
-     */
     private User getCurrentUser() {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         String currentUsername = authentication.getName();
