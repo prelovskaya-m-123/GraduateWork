@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-@RequiredArgsConstructor
+@RequiredArgsConstructor(onConstructor_ = @Autowired)
 public class ComplexMapper {
 
     private final UserMapper userMapper;
@@ -18,6 +18,7 @@ public class ComplexMapper {
     private final CommentMapper commentMapper;
     private final ExtendedAdMapper extendedAdMapper;
 
+    // Маппинг списка объявлений с подсчётом
     public AdsDTO toAdsDto(List<Ad> ads) {
         return AdsDTO.builder()
                 .count(ads.size())
@@ -27,10 +28,12 @@ public class ComplexMapper {
                 .build();
     }
 
+    // Маппинг расширенного объявления
     public ExtendedAdDTO toExtendedAdDto(Ad ad) {
         return extendedAdMapper.toDto(ad);
     }
 
+    // Маппинг списка комментариев с подсчётом
     public CommentsDTO toCommentsDto(List<Comment> comments) {
         return CommentsDTO.builder()
                 .count(comments.size())

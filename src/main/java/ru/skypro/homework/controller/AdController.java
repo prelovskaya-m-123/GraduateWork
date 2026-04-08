@@ -3,7 +3,6 @@ package ru.skypro.homework.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -54,18 +53,12 @@ public class AdController {
     public ResponseEntity<AdDTO> updateAd(
             @PathVariable Long id,
             @Valid @RequestBody AdRequestDTO request) {
-        if (!adService.isAdOwner(id)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         AdDTO updatedAd = adService.updateAd(id, request);
         return ResponseEntity.ok(updatedAd);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteAd(@PathVariable Long id) {
-        if (!adService.isAdOwner(id)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
-        }
         adService.deleteAd(id);
         return ResponseEntity.noContent().build();
     }

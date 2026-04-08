@@ -44,7 +44,7 @@ public class UserController {
         if (userService.changePassword(newPasswordDTO.getCurrentPassword(), newPasswordDTO.getNewPassword())) {
             return ResponseEntity.ok().build();
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
     }
 }

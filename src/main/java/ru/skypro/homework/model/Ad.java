@@ -25,7 +25,7 @@ public class Ad {
     @Column(name = "description", length = 64)
     private String description;
 
-    @Column(name = "image")
+    @Column(name = "image_url")
     private String image;
 
     @OneToMany(mappedBy = "ad", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
