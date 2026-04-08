@@ -12,6 +12,7 @@ import ru.skypro.homework.dto.UserDTO;
 import ru.skypro.homework.mapper.UserMapper;
 import ru.skypro.homework.model.User;
 import ru.skypro.homework.repository.UserRepository;
+import ru.skypro.homework.service.ImageService;
 import ru.skypro.homework.service.UserService;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final ImageService imageService;
 
     @Override
     public UserDTO getCurrentUser() {
@@ -66,7 +68,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
 
         try {
-            String imageUrl = saveImage(image);
+            String imageUrl = imageService.saveImage(image, "users");
             user.setImage(imageUrl);
             userRepository.save(user);
         } catch (IOException e) {
